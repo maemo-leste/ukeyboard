@@ -13,8 +13,6 @@ if [ -f /usr/share/applications/hildon-control-panel/cptextinput.desktop ]; then
 	mv -f /usr/share/applications/hildon-control-panel/cptextinput.desktop /usr/share/applications/hildon-control-panel/cptextinput.desktop.removed
 fi
 
-update-sudoers
-
 # temporary disable keyboard layouts that are provided also with ukeyboard
 layouts="cs_CZ de_DE es_ES ru_RU"
 for i in $layouts; do

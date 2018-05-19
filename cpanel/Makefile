@@ -3,10 +3,10 @@ all: libukeyboard-prefs.so ukeyboard-postinst.launch
 libukeyboard-prefs.so:	prefs.o hw.o onscreen.o lang.o langset.o about.o
 	$(CC) -shared -o $@ $+
 
-add_cflags = `pkg-config --cflags gtk+-2.0 hildon-1 gconf-2.0 libosso`
+add_cflags = `pkg-config --cflags gtk+-2.0 hildon-1 gconf-2.0 libosso` -fPIC
 
 prefs.o:	prefs.c
-	$(CC) -c -W -Wall `pkg-config --cflags gtk+-2.0 gconf-2.0 hildon-control-panel libosso` -o $@ $<
+	$(CC) -c -W -Wall $(add_cflags) `pkg-config --cflags hildon-control-panel` -o $@ $<
 
 hw.o:	hw.c
 	$(CC) -c -W -Wall $(add_cflags) -o $@ $<

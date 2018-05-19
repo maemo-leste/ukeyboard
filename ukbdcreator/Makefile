@@ -1,5 +1,5 @@
-CFLAGS_ADD = -g -W -Wall `pkg-config --cflags gtk+-2.0 hildon-1 hildon-fm-2 libosso gnome-vfs-2.0`
-LDFLAGS_ADD = `pkg-config --libs gtk+-2.0 hildon-1 hildon-fm-2 libosso libosso gnome-vfs-2.0`
+CFLAGS_ADD = -g -W -Wall `pkg-config --cflags gtk+-2.0 hildon-1 hildon-fm-2 libosso`
+LDFLAGS_ADD = `pkg-config --libs gtk+-2.0 hildon-1 hildon-fm-2 libosso libosso`
 LD = $(CC)
 
 all:	ukbdcreator

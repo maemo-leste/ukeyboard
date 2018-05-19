@@ -6,8 +6,6 @@ if [ -f /usr/share/applications/hildon-control-panel/cptextinput.desktop.removed
 	mv -f /usr/share/applications/hildon-control-panel/cptextinput.desktop.removed /usr/share/applications/hildon-control-panel/cptextinput.desktop
 fi
 
-update-sudoers
-
 case "$1" in
 	remove)
 	    # remove all symbolic links from /usr/share/keyboards/

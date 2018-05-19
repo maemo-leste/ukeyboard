@@ -22,7 +22,6 @@
 #include <hildon/hildon.h>
 #include <hildon/hildon-file-chooser-dialog.h>
 #include <libosso.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 #include "version.h"
@@ -123,32 +122,16 @@ void disp_compile_error(int line, gchar *msg)
 
 static gboolean read_file(gchar *fname)
 {
-	GnomeVFSFileInfo finfo;
-	GnomeVFSHandle *handle = NULL;
-	GnomeVFSFileSize bytes;
 	gchar *buf;
 
-	if (gnome_vfs_get_file_info(fname, &finfo, GNOME_VFS_FILE_INFO_DEFAULT) != GNOME_VFS_OK ||
-			gnome_vfs_open(&handle, fname, GNOME_VFS_OPEN_READ) != GNOME_VFS_OK) {
+	if (!g_file_get_contents(fname, &buf, NULL, NULL)) {
 		disp_error("Error opening file");
 		return FALSE;
 	}
-	buf = g_malloc0(finfo.size + 1);
-	if (!buf) {
-		gnome_vfs_close(handle);
-		disp_error("Not enough memory");
-		return FALSE;
-	}
-	if (gnome_vfs_read(handle, buf, finfo.size, &bytes) != GNOME_VFS_OK || bytes != finfo.size) {
-		gnome_vfs_close(handle);
-		g_free(buf);
-		disp_error("Error reading file");
-		return FALSE;
-	}
-	gnome_vfs_close(handle);
 
 	gtk_text_buffer_set_text(buffer, buf, -1);
 	g_free(buf);
+
 	return TRUE;
 }
 
@@ -162,26 +145,17 @@ static gchar *get_buffer(void)
 
 static gboolean write_file(gchar *fname)
 {
-	GnomeVFSHandle *handle = NULL;
-	GnomeVFSFileSize bytes;
-	gchar *buf;
-	size_t size;
+	gchar *buf = get_buffer();
 
-	if (gnome_vfs_create(&handle, fname, GNOME_VFS_OPEN_WRITE, FALSE, 0644) != GNOME_VFS_OK) {
-		disp_error("Error creating file");
-		return FALSE;
-	}
-	buf = get_buffer();
-	size = strlen(buf);
-	if (gnome_vfs_write(handle, buf, size, &bytes) != GNOME_VFS_OK || bytes != size) {
-		gnome_vfs_close(handle);
+	if (!g_file_set_contents(fname, buf, -1, NULL)) {
 		g_free(buf);
 		disp_error("Error writing file");
 		return FALSE;
 	}
-	gnome_vfs_close(handle);
+
 	g_free(buf);
 	disp_info("Saved");
+
 	return TRUE;
 }
 
@@ -485,7 +459,6 @@ int main(int argc, char **argv)
 	g_set_prgname("ukbdcreator");
 	g_set_application_name("Ukeyboard Creator");
 	osso_context = osso_initialize("cz.upir.ukbdcreator", UKBD_VERSION, TRUE, NULL);
-	gnome_vfs_init();
 	conf = gconf_client_get_default();
 	gconf_client_add_dir(conf, "/apps/osso/inputmethod/hildon-im-languages",
 		GCONF_CLIENT_PRELOAD_NONE, NULL);

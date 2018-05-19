@@ -23,7 +23,6 @@
 #include <hildon/hildon-caption.h>
 #include <hildon/hildon-controlbar.h>
 #include <hildon/hildon.h>
-#include <device_symbols.h>
 #include <libosso.h>
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
